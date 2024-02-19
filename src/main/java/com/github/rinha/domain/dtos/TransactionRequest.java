@@ -1,14 +1,15 @@
-package com.github.rinha.dtos;
+package com.github.rinha.domain.dtos;
 
+import com.github.rinha.utils.ConstantsUtil;
 import org.apache.logging.log4j.util.Strings;
 
-public record TransacaoRequest(String valor, String tipo, String descricao) {
+public record TransactionRequest(String valor, String tipo, String descricao) {
 
     public boolean isValid() {
         return this.valor != null && this.tipo != null && this.descricao != null;
     }
 
-    public boolean isValorValid() {
+    public boolean isValueValid() {
         if(Strings.isBlank(this.valor)) return false;
 
         try {
@@ -18,23 +19,23 @@ public record TransacaoRequest(String valor, String tipo, String descricao) {
         }
     }
 
-    public boolean isTipoValid() {
+    public boolean isTypeValid() {
         if(Strings.isBlank(this.tipo)) return false;
 
-        return this.tipo.equals("c") || this.tipo.equals("d");
+        return this.tipo.equals(ConstantsUtil.TRANSACTION_TYPE_CREDIT) || this.tipo.equals(ConstantsUtil.TRANSACTION_TYPE_DEBIT);
     }
 
-    public boolean isDescricaoValid() {
+    public boolean isDescriptionValid() {
         if (Strings.isBlank(this.descricao)) return false;
 
         return this.descricao.length() <= 10;
     }
 
     public boolean isRequestValid() {
-        return this.isValid() && this.isValorValid() && this.isTipoValid() && this.isDescricaoValid();
+        return this.isValid() && this.isValueValid() && this.isTypeValid() && this.isDescriptionValid();
     }
 
-    public int parseValorToInt() {
+    public int parseValueToInt() {
         return Integer.parseInt(this.valor);
     }
 }

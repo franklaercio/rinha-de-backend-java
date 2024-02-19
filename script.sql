@@ -1,22 +1,22 @@
-create table if not exists cliente
+CREATE TABLE IF NOT EXISTS CUSTOMER
 (
-    id serial primary key,
-    limite int not null,
-    saldo  int not null
+    id            SERIAL PRIMARY KEY,
+    max_limit     INT NOT NULL,
+    balance       INT NOT NULL
 );
 
-create table if not exists transacao
+CREATE TABLE IF NOT EXISTS CUSTOMER_TRANSACTION
 (
-    id  serial   primary key,
-    id_cliente   integer not null references cliente,
-    valor        int       not null,
-    tipo         varchar(1)   not null,
-    descricao    varchar(255) not null,
-    data   timestamp    not null
+    id            SERIAL PRIMARY KEY,
+    id_customer   INTEGER NOT NULL REFERENCES CUSTOMER,
+    amount        INT NOT NULL,
+    kind          VARCHAR(1) NOT NULL,
+    description   VARCHAR(255) NOT NULL,
+    created_at    TIMESTAMP NOT NULL
 );
 
-INSERT INTO cliente (limite, saldo) VALUES (100000, 0);
-INSERT INTO cliente (limite, saldo) VALUES (80000, 0);
-INSERT INTO cliente (limite, saldo) VALUES (1000000, 0);
-INSERT INTO cliente (limite, saldo) VALUES (10000000, 0);
-INSERT INTO cliente (limite, saldo) VALUES (500000, 0);
+INSERT INTO CUSTOMER (max_limit, balance) VALUES (100000, 0);
+INSERT INTO CUSTOMER (max_limit, balance) VALUES (80000, 0);
+INSERT INTO CUSTOMER (max_limit, balance) VALUES (1000000, 0);
+INSERT INTO CUSTOMER (max_limit, balance) VALUES (10000000, 0);
+INSERT INTO CUSTOMER (max_limit, balance) VALUES (500000, 0);
