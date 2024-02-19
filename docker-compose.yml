@@ -2,10 +2,7 @@ version: "3.5"
 
 services:
   api01: &api
-    # Lembre-se de que seu serviço HTTP deve estar hospedado num repositório
-    # publicamente acessível! Ex.: hub.docker.com
-    build:
-      context: .
+    image: franklaercio/rinha-de-backend-2024-q1:latest
     hostname: api01
     environment:
       - DB_HOSTNAME=db
@@ -19,7 +16,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.35"
+          cpus: "0.30"
           memory: "160MB"
 
   api02:
@@ -27,6 +24,9 @@ services:
     hostname: api02
     environment:
       - DB_HOSTNAME=db
+      - POSTGRES_DB=rinha
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=123
     ports:
       - "8082:8080"
 
