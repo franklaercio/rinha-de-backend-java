@@ -21,7 +21,11 @@ jobs:
       
     - name: Build Docker image
       run: docker build -t $DOCKER_USERNAME/rinha-de-backend-2024-q1 .
+      env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       
     - name: Push Docker image
       run: docker push $DOCKER_USERNAME/rinha-de-backend-2024-q1
+      env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
 
