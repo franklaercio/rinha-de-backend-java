@@ -8,6 +8,6 @@ __Tecnologias__:
 - PostgreSQL
 - NGINX
 
-__Link Repositório__: https://github.com/franklaercio/rinha-de-backend-2024-q1
+__Link Repositório__: https://github.com/franklaercio/rinha-de-backend-java
 
 __LinkedIn__: https://www.linkedin.com/in/frank-laercio/
