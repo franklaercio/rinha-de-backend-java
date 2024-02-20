@@ -43,11 +43,7 @@ public class AccountService {
         return Mono.just(new CustomerDTO(customer.getMaxLimit(), newBalance));
     }
 
-    public Mono<Boolean> isValidCustomerId(int id) {
-        return Mono.just(this.accountPersistence.existsCustomerById(id));
-    }
-
-    public Mono<Boolean> isTransactionValid(TransactionRequest transaction) {
-        return transaction.isRequestValid() ? Mono.just(true): Mono.error(UnprocessableException::new);
+    public Boolean isValidCustomerId(int id) {
+        return this.accountPersistence.existsCustomerById(id);
     }
 }

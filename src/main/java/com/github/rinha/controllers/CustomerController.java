@@ -20,21 +20,24 @@ public class CustomerController {
 
     @GetMapping("/clientes/{id}/extrato")
     public Mono<ResponseEntity<StatementDTO>> getExtratoByClienteId(@PathVariable int id) {
-        return Mono.just(id)
-                .filterWhen(accountService::isValidCustomerId)
-                .flatMap(accountService::findStatementByCustomerId)
+        if (!accountService.isValidCustomerId(id))
+            return Mono.just(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+
+        return accountService.findStatementByCustomerId(id)
                 .map(ResponseEntity::ok)
-                .defaultIfEmpty(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+                .onErrorReturn(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
     }
 
     @PostMapping("/clientes/{id}/transacoes")
     public Mono<ResponseEntity<CustomerDTO>> transacionar(@PathVariable int id, @RequestBody TransactionRequest transaction) {
-        return Mono.just(id)
-                .filterWhen(accountService::isValidCustomerId)
-                .flatMap(unused -> accountService.isTransactionValid(transaction))
-                .flatMap(clientId -> accountService.updateBalanceAndInsertTransaction(id, transaction.parseValueToInt(), transaction.tipo(), transaction.descricao()))
-                .map(ResponseEntity::ok)
-                .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.NOT_FOUND).build()))
-                .onErrorReturn(ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build());
+        if (!accountService.isValidCustomerId(id)) {
+            return Mono.just(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+        } else if (!transaction.isRequestValid()) {
+            return Mono.just(ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build());
+        } else {
+            return accountService.updateBalanceAndInsertTransaction(id, transaction.parseValueToInt(), transaction.tipo(), transaction.descricao())
+                    .map(ResponseEntity::ok)
+                    .onErrorReturn(ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build());
+        }
     }
 }
