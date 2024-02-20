@@ -31,7 +31,7 @@ public class CustomerControllerTest {
     @Test
     void shouldBeRetrieveStatement() {
         // Given
-        when(accountService.isValidCustomerId(anyInt())).thenReturn(Mono.just(true));
+        when(accountService.isValidCustomerId(anyInt())).thenReturn(true);
         when(accountService.findStatementByCustomerId(anyInt())).thenReturn(Mono.just(new StatementDTO(new BalanceDTO(10, 10), List.of(new TransactionResponse(1, "c", "test", "2024-02-19")))));
 
         // When and Then
@@ -47,7 +47,7 @@ public class CustomerControllerTest {
     @Test
     void shouldBeReturnNotFoundWhenCustomerIdIsInvalidForStatement() {
         // Given
-        when(accountService.isValidCustomerId(anyInt())).thenReturn(Mono.just(false));
+        when(accountService.isValidCustomerId(anyInt())).thenReturn(false);
 
         // When and Then
         controller.getExtratoByClienteId(123)
@@ -62,8 +62,7 @@ public class CustomerControllerTest {
         // Given
         TransactionRequest transaction = new TransactionRequest("100", "c", "test");
 
-        when(accountService.isValidCustomerId(anyInt())).thenReturn(Mono.just(true));
-        when(accountService.isTransactionValid(transaction)).thenReturn(Mono.just(true));
+        when(accountService.isValidCustomerId(anyInt())).thenReturn(true);
         when(accountService.updateBalanceAndInsertTransaction(anyInt(), anyInt(), anyString(), anyString()))
                 .thenReturn(Mono.just(new CustomerDTO(123, 10)));
 
@@ -72,7 +71,6 @@ public class CustomerControllerTest {
                 .doOnNext(response -> {
                     assert response.getStatusCodeValue() == HttpStatus.OK.value();
                     verify(accountService, times(1)).isValidCustomerId(123);
-                    verify(accountService, times(1)).isTransactionValid(transaction);
                     verify(accountService, times(1)).updateBalanceAndInsertTransaction(123, transaction.parseValueToInt(), transaction.tipo(), transaction.descricao());
                 })
                 .block();
@@ -83,7 +81,7 @@ public class CustomerControllerTest {
         // Given
         TransactionRequest transaction = new TransactionRequest("100", "c", "test");
 
-        when(accountService.isValidCustomerId(anyInt())).thenReturn(Mono.just(false));
+        when(accountService.isValidCustomerId(anyInt())).thenReturn(false);
 
         // When and Then
         controller.transacionar(123, transaction)
@@ -96,10 +94,8 @@ public class CustomerControllerTest {
     @Test
     void shouldBeReturnUnprocessableEntityWhenTransactionIsInvalid() {
         // Given
-        TransactionRequest transaction = new TransactionRequest("100", "c", "test");
-
-        when(accountService.isValidCustomerId(anyInt())).thenReturn(Mono.just(true));
-        when(accountService.isTransactionValid(transaction)).thenReturn(Mono.just(false));
+        TransactionRequest transaction = new TransactionRequest("100", "e", "test");
+        when(accountService.isValidCustomerId(anyInt())).thenReturn(true);
 
         // When and Then
         controller.transacionar(123, transaction)
