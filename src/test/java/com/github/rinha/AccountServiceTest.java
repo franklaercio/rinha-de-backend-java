@@ -3,6 +3,7 @@ package com.github.rinha;
 import com.github.rinha.domain.Customer;
 import com.github.rinha.domain.dtos.CustomerDTO;
 import com.github.rinha.domain.dtos.StatementDTO;
+import com.github.rinha.domain.dtos.TransactionRequest;
 import com.github.rinha.domain.dtos.TransactionResponse;
 import com.github.rinha.domain.exceptions.UnprocessableException;
 import com.github.rinha.persistence.AccountPersistence;
@@ -19,7 +20,6 @@ import reactor.test.StepVerifier;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
@@ -88,10 +88,12 @@ class AccountServiceTest {
         when(this.accountPersistence.existsCustomerById(anyInt())).thenReturn(true);
 
         // When
-        Boolean isCustomerValid = this.accountService.isValidCustomerId(1);
+        Mono<Boolean> isCustomerValid = this.accountService.isValidCustomerId(1);
 
         // Then
-        assertEquals(true, isCustomerValid);
+        StepVerifier.create(isCustomerValid)
+                .expectNextMatches(b -> b.equals(true))
+                .verifyComplete();
     }
 
     @Test
@@ -100,9 +102,33 @@ class AccountServiceTest {
         when(this.accountPersistence.existsCustomerById(anyInt())).thenReturn(false);
 
         // When
-        Boolean isCustomerValid = this.accountService.isValidCustomerId(1);
+        Mono<Boolean> isCustomerValid = this.accountService.isValidCustomerId(1);
 
         // Then
-        assertEquals(false, isCustomerValid);
+        StepVerifier.create(isCustomerValid)
+                .expectNextMatches(b -> b.equals(false))
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldVerifyIfIsTransactionValid() {
+        // When
+        Mono<Boolean> isTransactionValid = this.accountService.isTransactionValid(new TransactionRequest("1", "c", "test"));
+
+        // Then
+        StepVerifier.create(isTransactionValid)
+                .expectNextMatches(b -> b.equals(true))
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldVerifyIfIsTransactionInvalid() {
+        // When
+        Mono<Boolean> isTransactionValid = this.accountService.isTransactionValid(new TransactionRequest("c", "c", "test"));
+
+        // Then
+        StepVerifier.create(isTransactionValid)
+                .expectErrorMatches(throwable -> throwable instanceof UnprocessableException)
+                .verify();
     }
 }
