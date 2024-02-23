@@ -23,6 +23,7 @@ public class AccountService {
         this.accountPersistence = accountPersistence;
     }
 
+    @Transactional(readOnly = true)
     public Mono<StatementDTO> findStatementByCustomerId(int id) {
         Customer customer = this.accountPersistence.findCustomerById(id);
         List<TransactionResponse> transactions = this.accountPersistence.findTransactionsByCustomerId(id);
