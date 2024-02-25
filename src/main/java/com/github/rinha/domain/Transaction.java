@@ -1,74 +1,64 @@
 package com.github.rinha.domain;
 
-import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Transaction {
 
-    private int id;
+  @JsonProperty("valor")
+  private int amount;
 
-    private Customer customer;
+  @JsonProperty("tipo")
+  private String kind;
 
-    private int value;
+  @JsonProperty("descricao")
+  private String description;
 
-    private String type;
+  @JsonProperty("realizada_em")
+  private String createdAt;
 
-    private String description;
+  public Transaction() {
+  }
 
-    private LocalDateTime createdAt;
+  public Transaction(int amount, String kind, String description, String createdAt) {
+    this.amount = amount;
+    this.kind = kind;
+    this.description = description;
+    this.createdAt = createdAt;
+  }
 
-    public int getId() {
-        return id;
-    }
+  public int getAmount() {
+    return amount;
+  }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+  public void setAmount(int amount) {
+    this.amount = amount;
+  }
 
-    public Customer getCliente() {
-        return customer;
-    }
+  public String getKind() {
+    return kind;
+  }
 
-    public void setCliente(Customer customer) {
-        this.customer = customer;
-    }
+  public void setKind(String kind) {
+    this.kind = kind;
+  }
 
-    public Customer getCustomer() {
-        return customer;
-    }
+  public String getDescription() {
+    return description;
+  }
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
+  public void setDescription(String description) {
+    this.description = description;
+  }
 
-    public int getValue() {
-        return value;
-    }
+  public String getCreatedAt() {
+    return createdAt;
+  }
 
-    public void setValue(int value) {
-        this.value = value;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
+  public void setCreatedAt(String createdAt) {
+    this.createdAt = createdAt;
+  }
 }
